@@ -1,0 +1,5 @@
+# application.yml
+app:
+  jwt:
+    secret: your-secret-key
+    expiration-in-ms: 3600000  # 1 hour
