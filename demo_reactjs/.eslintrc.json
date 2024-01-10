@@ -1,0 +1,16 @@
+{
+    "eslintConfig": {
+     "extends": [
+       "react-app",
+       "react-app/jest",
+       "react/jsx-runtime"
+     ],
+     "rules": {
+       "react/jsx-uses-react": "off",
+       "react/react-in-jsx-scope": "off"
+     }
+    }
+
+
+   }
+   
