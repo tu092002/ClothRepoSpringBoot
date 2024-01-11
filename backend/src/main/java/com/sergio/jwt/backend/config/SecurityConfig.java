@@ -38,7 +38,7 @@ public class SecurityConfig {
                                 "/register",
                                 "api/v1/images",
                                 "/category").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/login","/", "/index","/admin","/admin/category",
+                        .requestMatchers(HttpMethod.GET, "/login","/", "/index","/admin",
                                 "/register",
                                 "/current-user",
                                 "api/v1/images",
@@ -47,10 +47,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/category/{id}").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/category/{id}").permitAll()
                         //=============== admin định nghĩa ===================================
-                        .requestMatchers(HttpMethod.POST, "/admin/**/").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/admin/**/").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/admin/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/admin/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/admin/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/admin/*").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/admin/*").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/admin/*").permitAll()
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
