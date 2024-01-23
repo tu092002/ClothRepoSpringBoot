@@ -1,6 +1,7 @@
 package com.sergio.jwt.backend.controllers;
 
 import com.sergio.jwt.backend.entites.Image;
+import com.sergio.jwt.backend.entites.Product;
 import com.sergio.jwt.backend.services.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
@@ -35,8 +36,8 @@ public class ImageController {
 
     // Upload ảnh
     @PostMapping("")
-    public ResponseEntity<?> uploadImage(@ModelAttribute("file") MultipartFile file) {
-        return new ResponseEntity<>(imageService.uploadImage(file), HttpStatus.CREATED);
+    public ResponseEntity<?> uploadImage(@ModelAttribute("file") MultipartFile file, @ModelAttribute("product")Product product) {
+        return new ResponseEntity<>(imageService.uploadImage(file,product,0), HttpStatus.CREATED);
     }
 
     // Download ảnh

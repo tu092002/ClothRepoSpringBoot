@@ -32,11 +32,7 @@ public class CateController {
     }
 
 
-    // add cate
-    @PostMapping("")
-    public ResponseEntity<?> addCate(@RequestBody Category  category ) {
-        return new ResponseEntity<>(categoryService.addCate(category), HttpStatus.CREATED);
-    }
+
 
 
     // delete cate

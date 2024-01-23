@@ -3,6 +3,7 @@ package com.sergio.jwt.backend.config;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.cors.CorsConfiguration;
@@ -13,6 +14,9 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import java.util.Arrays;
 
 @Configuration
+@EnableJpaAuditing
+
+//@EnableWebMvc chặn css
 public class WebConfig {
 
     private static final Long MAX_AGE = 3600L;

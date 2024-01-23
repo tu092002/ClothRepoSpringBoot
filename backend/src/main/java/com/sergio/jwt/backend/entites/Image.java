@@ -7,6 +7,7 @@ import org.hibernate.annotations.JdbcType;
 import org.hibernate.type.descriptor.jdbc.BlobJdbcType;
 
 import java.time.Instant;
+import java.util.Base64;
 
 @Builder
 @AllArgsConstructor
@@ -36,10 +37,20 @@ public class Image {
     @Column(name = "type")
     private String type;
 
-    public Image(int id, String fileName, String contentType, byte[] bytes) {
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_id")
+    private Product product;
+    public String generateBase64Image()
+    {
+       return  Base64.getEncoder().encodeToString(this.getData());
+
+    }
+
+    public Image(int id, String fileName, String contentType, byte[] bytes, Product p) {
         this.id = id;
         this.name =  fileName;
         this.data = bytes;
         this.type = contentType;
+        this.product = p;
     }
 }

@@ -24,7 +24,13 @@ public class Category {
     @Column(name = "cate_name")
     private String cateName;
 
+    @Column(name = "description")
+    private  String description;
+
+    @Column(name="products")
     @OneToMany(mappedBy = "cate")
     private Set<Product> products = new LinkedHashSet<>();
+
+
 
 }

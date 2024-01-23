@@ -32,8 +32,8 @@ public class AuthController {
     }
     @GetMapping(path = "/current-user", produces = MediaType.APPLICATION_JSON_VALUE)
     @CrossOrigin
-    public ResponseEntity<Optional<User>> details(@AuthenticationPrincipal UserDto user) {
-        Optional<User> u = this.userService.getUserByLoginName(user.getLogin());
+    public ResponseEntity<User> details(@AuthenticationPrincipal UserDto user) {
+        User u = this.userService.findByUsername(user.getUsername());
         return new ResponseEntity<>(u, HttpStatus.OK);
     }
     @PostMapping("/register")

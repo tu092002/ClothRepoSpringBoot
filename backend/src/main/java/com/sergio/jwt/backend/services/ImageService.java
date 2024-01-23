@@ -1,10 +1,12 @@
 package com.sergio.jwt.backend.services;
 
 import com.sergio.jwt.backend.entites.Image;
+import com.sergio.jwt.backend.entites.Product;
 import com.sergio.jwt.backend.exceptions.NotFoundException;
 import com.sergio.jwt.backend.repositories.ImageRepository;
 import com.sergio.jwt.backend.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -25,9 +27,15 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ImageService {
-    private final ImageRepository imageRepository;
+public class    ImageService {
+    @Autowired
+    private  ImageRepository imageRepository;
     private final FileUtils fileUtils;
+    @Autowired
+    ProductService productService;
+    public List<Image> findImagesByProductId(int id){
+        return imageRepository.findImagesByProductId(id);
+    }
 
     public List<Image> getAllImage() {
         return imageRepository.findByOrderByCreatedAtDesc();
@@ -39,7 +47,7 @@ public class ImageService {
         });
     }
 
-    public Image uploadImage(MultipartFile file) {
+    public Image uploadImage(MultipartFile file, Product p, int idImgUpdate) {
         fileUtils.validateFile(file);
 
         try {
@@ -48,7 +56,7 @@ public class ImageService {
             byte[] compressedImageBytes = compressImage(file);
 
 
-            Image image = new Image(0,fileName, file.getContentType(), compressedImageBytes);
+            Image image = new Image(idImgUpdate,fileName, file.getContentType(), compressedImageBytes,p);
             return imageRepository.save(image);
         } catch (Exception e) {
             throw new RuntimeException("Upload image error: " + e.getMessage());

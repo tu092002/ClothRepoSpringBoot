@@ -7,34 +7,23 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(name = "role")
 public class Role {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "name")
     private String name;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "role_privilege",
-            joinColumns = {@JoinColumn(name = "role_id")},
-            inverseJoinColumns = {@JoinColumn(name = "privilege_id")})
-    private Set<Privilege> privileges = new HashSet<>();
 
-    // Other methods...
-
-    public void setPrivileges(Set<Privilege> privileges) {
-        this.privileges = privileges;
-    }
-
-
-    public Role (String name) {
-        this.name =  name;
-    }
-    // getters and setters
+//    @OneToMany(fetch = FetchType.EAGER,mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private Set<UserRole> userRoles = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "role")
+    private Set<UserRole> roleUsers;
 }

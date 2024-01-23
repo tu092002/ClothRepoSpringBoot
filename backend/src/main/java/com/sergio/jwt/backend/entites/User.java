@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -16,12 +17,17 @@ import java.util.Set;
 @Builder
 @Data
 @Entity
-@Table(name = "app_user")
+@Table(name = "user")
+
+@NamedEntityGraph(
+        name = "User.roles",
+        attributeNodes = @NamedAttributeNode("userRoles")
+)
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @Column(name = "first_name", nullable = false)
     @Size(max = 100)
@@ -33,15 +39,13 @@ public class User {
 
     @Column(nullable = false)
     @Size(max = 100)
-    private String login;
+    private String username;
 
     @Column(nullable = false)
-    @Size(max = 100)
+    @Size(max = 250)
     private String password;
-
-    @Column(nullable = false)
-    @Size(max=100)
-    private String role;
+    @Column(name = "enabled")
+    private Boolean enabled;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", orphanRemoval = true)
@@ -49,4 +53,14 @@ public class User {
     @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<AddressUser> addressUsers = new LinkedHashSet<>();
+//    @JsonIgnore
+//    @OneToMany(fetch = FetchType.EAGER,mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private Set<UserRole> userRoles = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private Set<UserRole> userRoles = new LinkedHashSet<>();
+
+    public void setUserRoles(Set<UserRole> userRoles) {
+        this.userRoles = userRoles;
+    }
 }
