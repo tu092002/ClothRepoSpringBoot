@@ -3,7 +3,10 @@ package com.sergio.jwt.backend.entites;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -12,8 +15,10 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
+
 @Entity
-@Table(name = "address", schema = "spring_security")
+@Table(name = "address")
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,5 +31,6 @@ public class Address {
 
     @OneToMany(mappedBy = "address")
     private Set<AddressUser> addressUsers = new LinkedHashSet<>();
-
+    @CreatedDate
+    private LocalDateTime createdDate;
 }

@@ -47,9 +47,22 @@
                 </ul>
             </li>
 
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-dashboard"></i> <span>Quản lý Thẻ</span>
+                    <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a th:href="@{/admin/tag}"><i class="fa fa-circle-o"></i> Danh sách Thẻ</a></li>
+                    <li><a th:href="@{/admin/add-tag}"><i class="fa fa-circle-o" ></i> Thêm mới thẻ</a></li>
+                </ul>
+            </li>
+
             <li>
-                <a href="">
-                    <i class="fa fa-th"></i> <span>Widgets</span>
+                <a th:href="@{/admin/voucher}">
+                    <i class="fa fa-th"></i> <span>Quản lí voucher</span>
                     <span class="pull-right-container">
               <small class="label pull-right bg-green">Hot</small>
             </span>

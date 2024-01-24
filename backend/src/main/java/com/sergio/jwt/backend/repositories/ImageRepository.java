@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ImageRepository extends JpaRepository<Image, Integer> {
     // Lấy danh sách tất cả image theo thời gian tạo giảm dần
-    List<Image> findByOrderByCreatedAtDesc();
+    List<Image> findByOrderByCreatedDateDesc();
     @Query("SELECT i FROM Image i " +
             "WHERE i.product.id =:prodId")
     List<Image> findImagesByProductId(@Param("prodId") int prodId);

@@ -48,7 +48,7 @@ public class Product {
 
     @CreatedDate
     private LocalDateTime createdDate;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "cate_id")
     private Category cate;
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)

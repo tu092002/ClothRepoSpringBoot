@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head th:replace="admin/fragments/head :: head"></head>
+<body class="hold-transition skin-blue sidebar-mini">
+<!-- Site wrapper -->
+<div class="wrapper">
+
+    <header th:replace="admin/fragments/header :: header"></header>
+
+    <!-- =============================================== -->
+
+    <!-- Left side column. contains the sidebar -->
+    <div th:replace="admin/fragments/sidebar :: sidebar"></div>
+
+    <!-- =============================================== -->
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -------->
+        <section class="content-header">
+            <h1>
+                Blank page
+                <small>it all starts here</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="/admin"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li><a href="/admin/voucher">voucher</a></li>
+                <li class="/admin/edit-voucher">Edit Voucher</li>
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <!--            <div th:if="${#fields.hasAnyErrors()}">-->
+            <!--                <ul>-->
+            <!--                    <li th:each="err : ${#fields.allErrors()}" th:text="${err}" />-->
+            <!--                </ul>-->
+            <!--            </div>-->
+            <div class="col-md-6">
+
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Quick Example</h3>
+                    </div>
+                    <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}"></div>
+
+
+                    <form role="form" method="post" th:action="@{/admin/edit-voucher/{id}(id=${voucher.id})}" enctype="multipart/form-data"
+                          th:object="${voucher}">
+                        <div class="box-body">
+
+                            <div class="form-group">
+                                <label for="voucherCode">voucherCode</label>
+                                <input type="text" class="form-control" id="voucherCode"
+                                       placeholder="voucherCode" name="voucherCode" th:field="*{voucherCode}">
+                            </div>
+                            <div class="form-group">
+                                <label for="discount">discountPercentage</label>
+                                <input type="number" class="form-control" id="discount"
+                                       placeholder="discount" name="discountPercentage"  th:field="*{discountPercentage}" step="any" />
+
+                                <!--                                <input type="text" class="form-control" id="discount"-->
+                                <!--                                       placeholder="discount" name="discount" th:field="*{discountPercentage}">-->
+                            </div>
+                            <div class="form-group">
+
+                                <!-- Radio -->
+                                <label>
+                                    <input type="radio" th:field="*{isActive}" value="true"> Active
+                                </label>
+                                <label>
+                                    <input type="radio" th:field="*{isActive}" value="false"> Inactive
+                                </label>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="startTime">Start Time:</label>
+                                <input type="datetime-local" id="startTime" th:field="*{startTime}" />
+
+                            </div>
+                            <div class="form-group">
+                                <label for="endTime">End Time:</label>
+                                <input type="datetime-local" id="endTime" th:field="*{endTime}" />
+
+                            </div>
+
+
+                        </div>
+
+                        <div class="box-footer">
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </div>
+                    </form>
+                </div>
+
+
+            </div>
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <footer th:replace="admin/fragments/footer :: footer"></footer>
+
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery 3 -->
+
+<div th:replace="admin/fragments/script :: script"></div>
+<script th:src="@{https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js}"></script>
+<script>
+    ClassicEditor
+        .create(document.querySelector('#editor'))
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+</body>
+</html>
+
+
+

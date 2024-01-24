@@ -19,7 +19,7 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                Blank page
+                voucher ADMIN
                 <small>it all starts here</small>
             </h1>
             <ol class="breadcrumb">
@@ -31,9 +31,11 @@
 
         <!-- Main content -->
         <section class="content">
+
             <form>
                 <div class="input-group input-group-sm hidden-xs" style="width: 150px;">
-                    <input type="text" name="keyword" class="form-control pull-right" placeholder="Search" th:value="${keyword}">
+                    <input type="text" name="keyword" class="form-control pull-right" placeholder="Search"
+                           th:value="${keyword}">
                     <div class="input-group-btn">
                         <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                     </div>
@@ -42,9 +44,10 @@
             <!-- Default box -->
             <div class="box">
                 <div class="box-header with-border">
-                    <h1 class="box-title">Danh sách loại sản phẩm</h1>
+                    <h1 class="box-title">Danh sách voucher</h1>
+
                     <div>
-                        <a href="/admin/add-category" class="btn btn-success">Thêm mới danh mục</a>
+                        <a href="/admin/add-voucher" class="btn btn-success">Thêm mới voucher</a>
                     </div>
                 </div>
 
@@ -55,18 +58,27 @@
                         <tbody>
                         <tr>
                             <th style="width: 10px">ID</th>
-                            <th>CategoryName</th>
-                            <th>Description</th>
-                            <th>Action</th>
-
+                            <th>voucherCode</th>
+                            <th>discountPercentage</th>
+                            <th>isActive</th>
+                            <th>startTime</th>
+                            <th>endTime</th>
                         </tr>
-                        <tr th:each="category : ${list}">
-                            <td th:text="${category.id}">No.x</td>
-                            <td th:text="${category.cateName}"><span class="badge bg-red"></span></td>
-                            <td th:text="${category.description}"><span class="badge bg-aqua-active"></span></td>
+                        <tr th:each="voucher : ${list}">
+                            <td th:text="${voucher.id}">No.x</td>
+                            <td th:text="${voucher.voucherCode}"><span class="badge bg-red"></span></td>
+                            <td th:text="${voucher.discountPercentage}"><span class="badge bg-red"></span></td>
+                            <td th:text="${voucher.isActive}"><span class="badge bg-red"></span></td>
+                            <td th:text="${voucher.startTime}"><span class="badge bg-red"></span></td>
+                            <td th:text="${voucher.endTime}"><span class="badge bg-red"></span></td>
+
+
+
+
                             <td>
-                                <a th:href="@{/admin/edit-category/{id}(id=${category.id})}" class="btn btn-success">Edit</a>
-                                <a th:href="@{/admin/delete-category/{id}(id=${category.id})}"
+                                <a th:href="@{/admin/edit-voucher/{id}(id=${voucher.id})}"
+                                   class="btn btn-success">Edit</a>
+                                <a th:href="@{/admin/delete-voucher/{id}(id=${voucher.id})}"
                                    onclick="return confirm('bạn chắc xóa ko')" class="btn btn-danger">Delete</a>
                             </td>
                         </tr>
@@ -78,15 +90,18 @@
 
                 <div class="box-footer clearfix">
                     <ul class="pagination pagination-sm no-margin pull-right">
-                        <li th:if="${currentPage > 1}"><a th:href="@{ ${keyword !=null && keyword != '' ? '?keyword=' + keyword + '&' : '?'}
-                        +'pageNo=' + ${currentPage - 1}}">«</a></li>
-                        <li th:each="i:${#numbers.sequence(1,totalPage)}" th:classappend="${currentPage == i ? 'active' : ''}">
-                            <a th:href="@{${keyword != null && keyword != '' ? '?keyword=' + keyword + '&' : '?'} + 'pageNo=' + ${i}}"
-                                th:text="${i}"></a>
-                        </li>
+                        <li><a th:if="${currentPage > 1}" th:href="@{${keyword != null && keyword != '' ? '?keyword='+keyword +'&' : '?'}
+                        + 'pageNo=' + ${currentPage -1 } }">«</a></li>
 
-                        <li th:if="${currentPage < totalPage}"><a th:href="@{  ${keyword != null && keyword != '' ? '?keyword=' + keyword + '&' : '?'}
-                        + 'pageNo=' + ${currentPage + 1}}">»</a></li>
+                        <li th:each="i:${#numbers.sequence(1,totalPage)}">
+                            <a
+                                th:href="@{${keyword != null && keyword != '' ? '?keyword='+keyword +'&' : '?'}
+                                + 'pageNo=' + ${i} } "
+                                th:classappend="${currentPage == 1 ? 'active' : ''}"
+                                th:text="${i}"></a></li>
+
+                        <li><a th:if="${currentPage < totalPage}" th:href="@{${keyword != null && keyword != '' ? '?keyword='+keyword +'&' : '?'}
+                        + 'pageNo=' + ${currentPage +1 } }"> » </a></li>
                     </ul>
                 </div>
             </div>

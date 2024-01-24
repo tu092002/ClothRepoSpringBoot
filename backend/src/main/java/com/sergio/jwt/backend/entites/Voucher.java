@@ -1,12 +1,18 @@
 package com.sergio.jwt.backend.entites;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
@@ -14,21 +20,30 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "voucher", schema = "spring_security")
+@Table(name = "voucher")
+@EntityListeners(AuditingEntityListener.class)
+
 public class Voucher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "create_date")
-    private Instant createDate;
+    @CreatedDate
+    private LocalDateTime createdDate;
+    @Column(name="start_time")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime startTime;
 
-    @Column(name = "discount_percentage", precision = 19, scale = 2)
+    @NotNull
+    @Min(value = 1, message = "Giá trị phải lớn hơn hoặc bằng 1")
+    @Max(value = 100, message = "Giá trị phải nhỏ hơn hoặc bằng 100")
+    @Column(nullable = false, precision = 5, scale = 2)
     private BigDecimal discountPercentage;
 
-    @Column(name = "end_date")
-    private Instant endDate;
+    @Column(name = "end_time")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime endTime;
 
     @Column(name = "is_active")
     private Boolean isActive;

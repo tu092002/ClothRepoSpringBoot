@@ -49,6 +49,8 @@
                 </div>
 
                 <div class="box-body">
+                    <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}"></div>
+
                     <table class="table table-bordered">
                         <tbody>
                         <tr>

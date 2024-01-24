@@ -38,7 +38,7 @@ public class    ImageService {
     }
 
     public List<Image> getAllImage() {
-        return imageRepository.findByOrderByCreatedAtDesc();
+        return imageRepository.findByOrderByCreatedDateDesc();
     }
 
     public Image getImage(Integer id) {

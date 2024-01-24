@@ -5,8 +5,11 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.type.descriptor.jdbc.BlobJdbcType;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Base64;
 
 @Builder
@@ -15,6 +18,7 @@ import java.util.Base64;
 @Getter
 @Setter
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "image", schema = "spring_security")
 public class Image {
     @Id
@@ -22,8 +26,7 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Column(name = "created_at")
-    private Instant createdAt;
+
 
     @Lob
     @Column(name = "data", nullable = false, columnDefinition="MEDIUMBLOB")
@@ -36,7 +39,8 @@ public class Image {
     @Size(max = 255)
     @Column(name = "type")
     private String type;
-
+    @CreatedDate
+    private LocalDateTime createdDate;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     private Product product;
