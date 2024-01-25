@@ -22,7 +22,7 @@ public class ProductService {
     // danh sach có keyword,có phân trang
     public Page<Product> search_Then_Pagination(String kw, Integer pageNo){
         List<Product>  list = this.searchByName(kw); // tìm danh sách kw trước
-        Pageable pageable = PageRequest.of(pageNo - 1, 2); // số lượng page, số sản phẩm có thể hiện/1 page
+        Pageable pageable = PageRequest.of(pageNo-1, 2, Sort.by("id").descending());
         Integer start = (int) pageable.getOffset();
         Integer end = (pageable.getOffset() + pageable.getPageSize()) > list.size() ? list.size() : (int) (pageable.getOffset() + pageable.getPageSize());
         list = list.subList(start,end);
@@ -30,7 +30,7 @@ public class ProductService {
     }
     // danh sách lấy tất cả ko keyword, có phân trang
     public Page<Product> findAll(Integer pageNo){
-        Pageable pageable = PageRequest.of(pageNo-1, 2, Sort.by(Sort.Direction.DESC, "createdDate"));
+        Pageable pageable = PageRequest.of(pageNo-1, 2, Sort.by("id").descending());
         return this.productRepo.findAll(pageable);
 
     }

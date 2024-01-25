@@ -31,7 +31,7 @@ public class TagService {
     }
     // trường hợp danh sách   ko keyword ,   có phân trang
     public Page<Tag> findAll(Integer pageNo){
-        Pageable pageable = PageRequest.of(pageNo-1, 2, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(pageNo-1, 2, Sort.by(Sort.Direction.DESC, "createdDate"));
         return this.TagRepo.findAll(pageable);
     }
     public Tag findById(int id) {

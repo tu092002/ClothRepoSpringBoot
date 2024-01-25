@@ -60,26 +60,40 @@
                             <th>ProductName</th>
                             <th>Price</th>
                             <th>Cate</th>
+                            <th>Tags</th>
+
                             <th>img1</th>
                             <th>img2</th>
                             <th>Description</th>
                             <th>Action</th>
 
                         </tr>
+
                         <tr th:each="product : ${list}">
                             <td th:text="${product.id}">No.x</td>
                             <td th:text="${product.productName}"><span class="badge bg-red"></span></td>
                             <td th:text="${product.price}"><span class="badge bg-red"></span></td>
                             <td th:text="${product.cate.cateName}"><span class="badge bg-red"></span></td>
+                            <td>
+                                <div th:each="prodTag : ${product.prodTags}">
+                                    <div th:each="tag:${listTag}" th:if="${prodTag.tag.getId() == tag.getId()}">
+                                        <span class="badge bg-red" th:text="${tag.tagName}"></span>
+                                    </div>
+
+                                </div>
+
+                            </td>
 
 
                             <td>
-                                <img th:if="${(product.images.size() >= 1)}" width="60px" height="60px" th:src="@{'data:image/jpeg;base64,'+${product.images.get(0).generateBase64Image()}}"
+                                <img th:if="${(product.images.size() >= 1)}" width="60px" height="60px"
+                                     th:src="@{'data:image/jpeg;base64,'+${product.images.get(0).generateBase64Image()}}"
                                      alt="Product" class="rounded-circle">
 
                             </td>
                             <td>
-                                <img  th:if="${(product.images.size() == 2)}" width="60px" height="60px" th:src="@{'data:image/jpeg;base64,'+${product.images.get(1).generateBase64Image()}}"
+                                <img th:if="${(product.images.size() == 2)}" width="60px" height="60px"
+                                     th:src="@{'data:image/jpeg;base64,'+${product.images.get(1).generateBase64Image()}}"
                                      alt="Product" class="rounded-circle">
 
                             </td>
@@ -104,10 +118,10 @@
 
                         <li th:each="i:${#numbers.sequence(1,totalPage)}">
                             <a
-                                th:href="@{${keyword != null && keyword != '' ? '?keyword='+keyword +'&' : '?'}
+                                    th:href="@{${keyword != null && keyword != '' ? '?keyword='+keyword +'&' : '?'}
                                 + 'pageNo=' + ${i} } "
-                                th:classappend="${currentPage == 1 ? 'active' : ''}"
-                                th:text="${i}"></a></li>
+                                    th:classappend="${currentPage == 1 ? 'active' : ''}"
+                                    th:text="${i}"></a></li>
 
                         <li><a th:if="${currentPage < totalPage}" th:href="@{${keyword != null && keyword != '' ? '?keyword='+keyword +'&' : '?'}
                         + 'pageNo=' + ${currentPage +1 } }"> » </a></li>

@@ -41,7 +41,7 @@ public class Image {
     private String type;
     @CreatedDate
     private LocalDateTime createdDate;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
     public String generateBase64Image()

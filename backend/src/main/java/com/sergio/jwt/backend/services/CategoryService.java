@@ -3,10 +3,7 @@ package com.sergio.jwt.backend.services;
 import com.sergio.jwt.backend.entites.Category;
 import com.sergio.jwt.backend.repositories.CategoryRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +28,7 @@ public class CategoryService {
     }
     // trường hợp danh sách   ko keyword ,   có phân trang
     public Page<Category> findAll(Integer pageNo){
-        Pageable pageable = PageRequest.of(pageNo-1,2);
+        Pageable pageable = PageRequest.of(pageNo-1,2, Sort.by(Sort.Direction.DESC,"createdDate"));
         return this.categoryRepo.findAll(pageable);
     }
     public Category findById(int id) {

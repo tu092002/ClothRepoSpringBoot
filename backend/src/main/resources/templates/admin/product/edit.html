@@ -41,10 +41,14 @@
                     <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}"></div>
 
 
-                    <form role="form" method="post" enctype="multipart/form-data"
+                    <form role="form" id="formAddProd" method="post" enctype="multipart/form-data"
                           th:action="@{/admin/edit-product/{id} (id=${product.id})}" th:object="${product}">
                         <div class="box-body">
-
+                            <div class="form-group">
+                                <label for="id">Id</label>
+                                <input type="text" class="form-control" id="id"
+                                       placeholder="Id" th:field="*{id}" disabled>
+                            </div>
                             <div class="form-group">
                                 <label for="productName">ProductName</label>
                                 <input type="text" class="form-control" id="productName"
@@ -72,9 +76,10 @@
                                 ${product.images.get(0).generateBase64Image()}}" alt="pic1"/>
                                 <img width="50px" height="50px" th:if="${(product.images.size() ==2)}" th:src="@{'data:image/jpeg;base64,'+
                                 ${product.images.get(1).generateBase64Image()}}" alt="pic1"/>
-                                <input type="file" name="files"  multiple/>
-                                <span th:if="${validFile}" th:text="${validFile}" th:class="${'alert'+ alertClass}">File error</span>
-
+                                <input type="file" name="files" multiple/>
+<!--                                <ul>-->
+<!--                                    <li th:each="err : ${#fields.errors('files')}" th:text="${err}" class="error" />-->
+<!--                                </ul>-->
                             </div>
 
                             <div class="form-group">
@@ -83,7 +88,12 @@
                                </textarea>
                             </div>
                         </div>
-
+                        <div class="form-group">
+                            <select name="tags" multiple>
+                                <option th:each="tag : ${allTags}" th:value="${tag.id}"
+                                        th:text="${tag.tagName}"></option>
+                            </select>
+                        </div>
                         <div class="box-footer">
                             <button type="submit" class="btn btn-primary">Update</button>
                         </div>
@@ -112,6 +122,15 @@
         .catch(error => {
             console.error(error);
         });
+
+
+    // document.getElementById('formAddProd').addEventListener('submit', function(e) {
+    //     e.preventDefault();
+    //     var formData = new FormData(this);
+    //     for (var pair of formData.entries()) {
+    //         console.log(pair[0]+ ', ' + pair[1]);
+    //     }
+    // });
 </script>
 </body>
 </html>

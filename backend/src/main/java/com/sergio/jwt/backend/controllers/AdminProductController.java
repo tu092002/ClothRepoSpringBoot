@@ -5,11 +5,14 @@ import com.sergio.jwt.backend.entites.Product;
 import com.sergio.jwt.backend.repositories.CategoryRepo;
 import com.sergio.jwt.backend.repositories.ImageFileRepo;
 import com.sergio.jwt.backend.repositories.ImageRepository;
+import com.sergio.jwt.backend.repositories.ProdTagRepo;
 import com.sergio.jwt.backend.services.*;
 
 import com.sergio.jwt.backend.services.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,14 +29,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLOutput;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminProductController {
+    @Autowired
+    private MessageSource messageSource;
     @Autowired
     public ProductService productService;
     @Autowired
@@ -48,6 +50,12 @@ public class AdminProductController {
     private ImageFileRepo imageFileRepo;
     @Autowired
     private ImageRepository imageRepository;
+    @Autowired
+    private TagService tagService;
+    @Autowired
+    private ProdTagService prodTagService;
+    @Autowired
+    private ProdTagRepo prodTagRepo;
 
 
     @GetMapping("/product")
@@ -63,9 +71,10 @@ public class AdminProductController {
 //        byte[] encoded1 = p.getImages().get(1).getData();
 //        String encodedString0 = Base64.getEncoder().encodeToString(encoded0);
 //        String encodedString1 = Base64.getEncoder().encodeToString(encoded1);
-
+        List<Tag> listTag = this.tagService.findAll();
 
         model.addAttribute("list", list);
+        model.addAttribute("listTag", listTag);
         model.addAttribute("keyword", keyword);
         model.addAttribute("totalPage", list.getTotalPages());
         model.addAttribute("currentPage", pageNo);
@@ -93,21 +102,46 @@ public class AdminProductController {
     public String add(Model model) {
         Product product = new Product();
         List<Category> listCate = categoryService.findAll();
-        model.addAttribute("product", product);
         model.addAttribute("listCate", listCate);
+
+        List<Tag> allTags = tagService.findAll();
+        model.addAttribute("product", product);
+        model.addAttribute("allTags", allTags);
         return "admin/product/add";
     }
 
     @PostMapping("/add-product")
-    public String createProduct(@Valid @ModelAttribute("product") Product product,
-                                @RequestParam("files") MultipartFile[] files
-            , BindingResult result, RedirectAttributes redirectAttributes) throws IOException {
+    public String createProduct(Model model,@ModelAttribute("product") Product product,
+                                @Valid @RequestParam("files") MultipartFile[] files
+            , BindingResult result, RedirectAttributes redirectAttributes,  @RequestParam("tags") List<Integer> tagIds) throws IOException {
+        if (result.hasErrors()) {
+//            String errorMessage = messageSource.getMessage("NotEmpty.files", null, LocaleContextHolder.getLocale());
+            return "admin/product/add";
+        }
         try {
-            if(files.length >=1){
-                Product prod = this.productService.create(product);
+
+
+            if (files.length >= 1) {
+                Product prod = this.productService.create(product); // sinh id tự tăng
+                // thẻm thẻ
+                Set<ProdTag> prodTagSet = new HashSet<>();
+                for (int id : tagIds) {
+                    Tag tag = tagService.findById(id);
+                    ProdTag prodTag = new ProdTag();
+                    prodTag.setProduct(prod);
+                    prodTag.setTag(tag);
+                    prodTagSet.add(prodTag);
+
+
+                }
+
+                product.setProdTags(prodTagSet);
+                this.productService.update(prod.getId(), prod);
+                // kết thúc thêm thẻ
+
                 for (int i = 0; i < files.length; i++) {
-                    MultipartFile file = files[i];
-                    this.imageService.uploadImage(file, prod,i);
+                    MultipartFile file =files[i];
+                    this.imageService.uploadImage(file, prod, i);
                     System.out.println("Index: " + i + ", File: " + file.getOriginalFilename());
                 }
                 redirectAttributes.addFlashAttribute("message", "Thêm thành công!");
@@ -137,39 +171,60 @@ public class AdminProductController {
         model.addAttribute("listCate", listCate);
 //        redirectAttributes.addFlashAttribute("validFile", "Chọn tối thiểu 1 hình!");
 //        redirectAttributes.addFlashAttribute("alertClass", "alert-warning");
+        List<Tag> allTags = tagService.findAll();
         model.addAttribute("product", product);
+        model.addAttribute("allTags", allTags);
         return "admin/product/edit";
     }
 
     @PostMapping("/edit-product/{id}")
     public String edit(@PathVariable("id") Integer id, @ModelAttribute("product") Product p,
-                       @Valid @RequestParam("files") MultipartFile[] files, Model model, RedirectAttributes redirectAttributes,BindingResult bindingResult) {
+                       @Valid @RequestParam("files") MultipartFile[] files, Model model,
+                       RedirectAttributes redirectAttributes, BindingResult bindingResult,
+                       @RequestParam("tags") Set<Integer> tagIds) {
         try {
 
             List<Category> listCate = this.categoryService.findAll();
             model.addAttribute("listCate", listCate);
-            Product prod = this.productService.create(p);
+            if (!tagIds.isEmpty()) {
+                // thẻm thẻ
+                Set<ProdTag> prodTagSet = new HashSet<>();
+                for (Integer tagId : tagIds) {
+                    Tag tag = tagService.findById(tagId);
+                    ProdTag prodTag = new ProdTag();
+                    prodTag.setProduct(p);
+                    prodTag.setTag(tag);
+                    prodTagSet.add(prodTag);
 
-            if (files.length == 2) {
 
-                imageRepository.deleteAll(imageService.findImagesByProductId(prod.getId()));
+                }
+                prodTagService.deleteByProdId(id);
+                Set<ProdTag> setProdTagCreated = prodTagService.create(prodTagSet);
+                p.setProdTags(setProdTagCreated);
+
+
+                // kết thúc thêm thẻ
+            }
+            // dù cho có thêm thẻ hay chưa vẫn update lại product
+            this.productService.update(id, p);
+
+            imageRepository.deleteAll(imageService.findImagesByProductId(p.getId()));
+
+            if (files.length == 2 || files.length == 1) {
+
                 for (int i = 0; i < files.length; i++) {
                     MultipartFile file = files[i];
-                    this.imageService.uploadImage(file, prod,i);
+                    this.imageService.uploadImage(file, p, i);
                     System.out.println("Index: " + i + ", File: " + file.getOriginalFilename());
                 }
 
-            }
-            if (files.length ==1) {
-
-               List<Image> listImg =  imageService.findImagesByProductId(prod.getId());
-                for (MultipartFile file : files) {
-                    int indexImg =  listImg.get(0).getId();
-                    this.imageService.uploadImage(file, prod,indexImg);
-
+            } else if (files.length > 2) {
+                for (int i = 0; i < 2; i++) {
+                    MultipartFile file = files[i];
+                    this.imageService.uploadImage(file, p, i);
+                    System.out.println("Index: " + i + ", File: " + file.getOriginalFilename());
                 }
             }
-
 
 
             redirectAttributes.addFlashAttribute("message", "Edit thành công!");
